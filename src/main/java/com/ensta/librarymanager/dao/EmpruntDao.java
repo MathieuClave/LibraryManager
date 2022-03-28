@@ -198,7 +198,7 @@ public class EmpruntDao implements IEmpruntDao {
 
 			pstmt.setInt(1, emprunt.getIdMembre());
 			pstmt.setInt(2, emprunt.getIdLivre());
-			pstmt.setString(1, emprunt.getDateEmprunt().toString());
+			pstmt.setString(3, emprunt.getDateEmprunt().toString());
 			pstmt.executeQuery();
 
 		} catch (SQLException e) {
@@ -223,6 +223,21 @@ public class EmpruntDao implements IEmpruntDao {
 			e.printStackTrace();
 			throw new DaoException();
 		}
+	}
+
+	public void returnBook(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isLivreDispo(int idLivre) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isEmpruntPossible(Membre membre) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
