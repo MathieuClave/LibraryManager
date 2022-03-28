@@ -9,8 +9,19 @@ import java.util.List;
 import com.ensta.librarymanager.exception.DaoException;
 import com.ensta.librarymanager.modele.Livre;
 import com.ensta.librarymanager.persistence.ConnectionManager;
+import com.ensta.librarymanager.service.EmpruntService;
 
 public class LivreDao implements ILivreDao {
+	private static LivreDao instance;
+	
+	private LivreDao() {}
+	
+	public static LivreDao getInstance() {
+		if (instance == null) {
+			instance = new LivreDao();
+		}
+		return instance;
+	}
 
 	@Override
 	public List<Livre> getList() throws DaoException {

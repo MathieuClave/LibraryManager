@@ -9,7 +9,19 @@ import com.ensta.librarymanager.modele.Livre;
 
 public class LivreService implements ILivreService {
 
-	private LivreDao livreDao =new LivreDao();
+	static LivreService instance;
+	
+	private LivreService() {}
+	
+	public static LivreService getInstance() {
+		if (instance == null) {
+			instance = new LivreService();
+		}
+		return instance;
+	}
+	
+	private LivreDao livreDao =LivreDao.getInstance();
+	
 	
 	
 	@Override
@@ -20,8 +32,12 @@ public class LivreService implements ILivreService {
 
 	@Override
 	public List<Livre> getListDispo() throws ServiceException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return this.livreDao.getListDispo();
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new ServiceException();
+		}
 	}
 
 	@Override
@@ -46,20 +62,33 @@ public class LivreService implements ILivreService {
 
 	@Override
 	public void update(Livre livre) throws ServiceException {
-		// TODO Auto-generated method stub
+		try {
+			this.livreDao.update(livre);
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new ServiceException();
+		}
 		
 	}
 
 	@Override
 	public void delete(int id) throws ServiceException {
-		// TODO Auto-generated method stub
-		
+		try {
+			this.livreDao.delete(id);
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new ServiceException();
+		}
 	}
 
 	@Override
 	public int count() throws ServiceException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			return this.livreDao.count();
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new ServiceException();
+		}
 	}
 
 }

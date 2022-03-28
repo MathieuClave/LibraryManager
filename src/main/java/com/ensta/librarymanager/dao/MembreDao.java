@@ -11,16 +11,28 @@ import com.ensta.librarymanager.modele.Abonnement;
 import com.ensta.librarymanager.modele.Livre;
 import com.ensta.librarymanager.modele.Membre;
 import com.ensta.librarymanager.persistence.ConnectionManager;
+import com.ensta.librarymanager.service.EmpruntService;
 
 public class MembreDao implements IMembreDao {
+	private static MembreDao instance;
+	
+	private MembreDao() {}
+	
+	public static MembreDao getInstance() {
+		if (instance == null) {
+			instance = new MembreDao();
+		}
+		return instance;
+	}
 
 	@Override
 	public List<Membre> getList() throws DaoException {
 		try {
 			List<Membre> result = null;
 			Connection conn = ConnectionManager.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("SELECT id, nom, prenom, adresse, email, telephone, abonnement "
-																+ "FROM membre ORDER BY nom, prenom; ");
+			PreparedStatement pstmt = conn
+					.prepareStatement("SELECT id, nom, prenom, adresse, email, telephone, abonnement "
+							+ "FROM membre ORDER BY nom, prenom; ");
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt("id");
@@ -29,7 +41,7 @@ public class MembreDao implements IMembreDao {
 				String adresse = rs.getString("adresse");
 				String email = rs.getString("email");
 				String telephone = rs.getString("telephone");
-				Abonnement abonnement =  Abonnement.valueOf(rs.getString("abonnement"));
+				Abonnement abonnement = Abonnement.valueOf(rs.getString("abonnement"));
 
 				Membre membre = new Membre(id, nom, prenom, adresse, email, telephone, abonnement);
 				result.add(membre);
@@ -45,8 +57,8 @@ public class MembreDao implements IMembreDao {
 	public Membre getById(int id) throws DaoException {
 		try {
 			Connection conn = ConnectionManager.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("SELECT id, nom, prenom, adresse, email, telephone, abonnement"
-																+ "FROM membre WHERE id = ?;");
+			PreparedStatement pstmt = conn.prepareStatement(
+					"SELECT id, nom, prenom, adresse, email, telephone, abonnement" + "FROM membre WHERE id = ?;");
 			pstmt.setInt(1, id);
 			ResultSet rs = pstmt.executeQuery();
 			rs.next();
@@ -55,7 +67,7 @@ public class MembreDao implements IMembreDao {
 			String adresse = rs.getString("adresse");
 			String email = rs.getString("email");
 			String telephone = rs.getString("telephone");
-			Abonnement abonnement =  Abonnement.valueOf(rs.getString("abonnement"));
+			Abonnement abonnement = Abonnement.valueOf(rs.getString("abonnement"));
 
 			Membre membre = new Membre(id, nom, prenom, adresse, email, telephone, abonnement);
 			return membre;
@@ -66,19 +78,21 @@ public class MembreDao implements IMembreDao {
 	}
 
 	@Override
-	public int create(String nom, String prenom, String adresse, String email, String telephone, Abonnement abonnement) throws DaoException {
+	public int create(String nom, String prenom, String adresse, String email, String telephone, Abonnement abonnement)
+			throws DaoException {
 		try {
 			Connection conn = ConnectionManager.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO membre(nom, prenom, adresse, email, telephone, abonnement) "
-																	+ "VALUES (?, ?, ?, ?, ?, ?);");
+			PreparedStatement pstmt = conn
+					.prepareStatement("INSERT INTO membre(nom, prenom, adresse, email, telephone, abonnement) "
+							+ "VALUES (?, ?, ?, ?, ?, ?);");
 
 			pstmt.setString(1, nom);
 			pstmt.setString(2, prenom);
 			pstmt.setString(3, adresse);
 			pstmt.setString(4, email);
 			pstmt.setString(5, telephone);
-			pstmt.setString(6, abonnement.name());			
-			
+			pstmt.setString(6, abonnement.name());
+
 			pstmt.executeQuery();
 
 			return pstmt.executeUpdate();
@@ -92,9 +106,9 @@ public class MembreDao implements IMembreDao {
 	public void update(Membre membre) throws DaoException {
 		try {
 			Connection conn = ConnectionManager.getConnection();
-			PreparedStatement pstmt = conn
-					.prepareStatement("UPDATE membre SET nom = ?, prenom = ?, adresse = ?, email = ?, telephone = ?, abonnement = ?"
-											+ "WHERE id = ?;");
+			PreparedStatement pstmt = conn.prepareStatement(
+					"UPDATE membre SET nom = ?, prenom = ?, adresse = ?, email = ?, telephone = ?, abonnement = ?"
+							+ "WHERE id = ?;");
 
 			pstmt.setInt(1, membre.getId());
 			pstmt.setString(2, membre.getNom());
@@ -103,7 +117,7 @@ public class MembreDao implements IMembreDao {
 			pstmt.setString(5, membre.getEmail());
 			pstmt.setString(6, membre.getTelephone());
 			pstmt.setString(7, membre.getAbonnement().name());
-			
+
 			pstmt.executeQuery();
 
 		} catch (SQLException e) {
