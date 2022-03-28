@@ -15,9 +15,10 @@ import com.ensta.librarymanager.service.EmpruntService;
 
 public class MembreDao implements IMembreDao {
 	private static MembreDao instance;
-	
-	private MembreDao() {}
-	
+
+	private MembreDao() {
+	}
+
 	public static MembreDao getInstance() {
 		if (instance == null) {
 			instance = new MembreDao();
@@ -155,6 +156,23 @@ public class MembreDao implements IMembreDao {
 			return result;
 
 		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DaoException();
+		}
+	}
+
+	public List<Membre> getListMembreEmpruntPossible() throws DaoException {
+		try {
+			List<Membre> empruntPossible = null;
+			EmpruntDao empruntDao = EmpruntDao.getInstance();
+			List<Membre> tousLesMembres = this.getList();
+			for (Membre membre : tousLesMembres) {
+				if (empruntDao.isEmpruntPossible(membre)) {
+					empruntPossible.add(membre);
+				}
+			}
+			return empruntPossible;
+		} catch (DaoException e) {
 			e.printStackTrace();
 			throw new DaoException();
 		}

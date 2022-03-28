@@ -7,15 +7,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.ensta.librarymanager.exception.DaoException;
+import com.ensta.librarymanager.modele.Emprunt;
 import com.ensta.librarymanager.modele.Livre;
 import com.ensta.librarymanager.persistence.ConnectionManager;
 import com.ensta.librarymanager.service.EmpruntService;
 
 public class LivreDao implements ILivreDao {
 	private static LivreDao instance;
-	
-	private LivreDao() {}
-	
+
+	private LivreDao() {
+	}
+
 	public static LivreDao getInstance() {
 		if (instance == null) {
 			instance = new LivreDao();
@@ -137,4 +139,20 @@ public class LivreDao implements ILivreDao {
 		}
 	}
 
+	public List<Livre> getListDispo() throws DaoException {
+		try {
+			List<Livre> dispo = null;
+			List<Livre> existent = this.getList();
+			EmpruntDao empruntDao = EmpruntDao.getInstance();
+			for (Livre livre : existent) {
+				if (empruntDao.isLivreDispo(livre.getId())) {
+					dispo.add(livre);
+				}
+			}
+			return dispo;
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new DaoException();
+		}
+	}
 }

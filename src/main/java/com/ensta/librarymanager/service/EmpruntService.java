@@ -21,7 +21,7 @@ public class EmpruntService implements IEmpruntService {
 		return instance;
 	}
 	
-	private EmpruntDao empruntDao =EmpruntDao.getInstance();
+	private EmpruntDao empruntDao = EmpruntDao.getInstance();
 	
 	@Override
 	public List<Emprunt> getList() throws ServiceException {

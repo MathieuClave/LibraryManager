@@ -17,9 +17,10 @@ import com.ensta.librarymanager.service.EmpruntService;
 
 public class EmpruntDao implements IEmpruntDao {
 	private static EmpruntDao instance;
-	
-	private EmpruntDao() {}
-	
+
+	private EmpruntDao() {
+	}
+
 	public static EmpruntDao getInstance() {
 		if (instance == null) {
 			instance = new EmpruntDao();
@@ -118,12 +119,10 @@ public class EmpruntDao implements IEmpruntDao {
 		try {
 			List<Emprunt> result = null;
 			Connection conn = ConnectionManager.getConnection();
-			PreparedStatement pstmt = conn
-					.prepareStatement("SELECT e.id AS id, idMembre, nom, prenom, adresse, email,\n"
-							+ "telephone, abonnement, idLivre, titre, auteur, isbn, dateEmprunt, dateRetour "
-							+ "FROM emprunt AS e " + "INNER JOIN membre ON membre.id = e.idMembre "
-							+ "INNER JOIN livre ON livre.id = e.idLivre "
-							+ "WHERE dateRetour IS NULL AND livre.id = ?;");
+			PreparedStatement pstmt = conn.prepareStatement("SELECT e.id AS id, idMembre, nom, prenom, adresse, email, "
+					+ "telephone, abonnement, idLivre, titre, auteur, isbn, dateEmprunt, dateRetour "
+					+ "FROM emprunt AS e " + "INNER JOIN membre ON membre.id = e.idMembre "
+					+ "INNER JOIN livre ON livre.id = e.idLivre " + "WHERE dateRetour IS NULL AND livre.id = ?;");
 			pstmt.setInt(1, idLivre);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -225,19 +224,54 @@ public class EmpruntDao implements IEmpruntDao {
 		}
 	}
 
-	public void returnBook(int id) {
-		// TODO Auto-generated method stub
-		
+	public void returnBook(int id) throws DaoException {
+		try {
+			List<Emprunt> list = this.getListCurrentByLivre(id);
+			LocalDate retour = LocalDate.now();
+			for (Emprunt emprunt : list) {
+				emprunt.setDateRetour(retour);
+				this.update(emprunt);
+			}
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new DaoException();
+		}
 	}
 
-	public boolean isLivreDispo(int idLivre) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isLivreDispo(int idLivre) throws DaoException {
+		try {
+			List<Emprunt> list = this.getListCurrentByLivre(idLivre);
+			if (list == null) {
+				return true;
+			}
+			return false;
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new DaoException();
+		}
 	}
 
-	public boolean isEmpruntPossible(Membre membre) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isEmpruntPossible(Membre membre) throws DaoException {
+		try {
+			List<Emprunt> list = this.getListCurrentByMembre(membre.getId());
+			int nbEmprunts = list.size();
+			Abonnement forfait = membre.getAbonnement();
+			int maxEmprunts = 0;
+			if (forfait == Abonnement.BASIC) {
+				maxEmprunts = 2;
+			} else if (forfait == Abonnement.PREMIUM) {
+				maxEmprunts = 5;
+			} else if (forfait == Abonnement.VIP) {
+				maxEmprunts = 20;
+			}
+			if (nbEmprunts < maxEmprunts) {
+				return true;
+			}
+			return false;
+		} catch (DaoException e) {
+			e.printStackTrace();
+			throw new DaoException();
+		}
 	}
 
 }
