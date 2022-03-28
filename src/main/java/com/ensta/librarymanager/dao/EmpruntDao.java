@@ -178,7 +178,7 @@ public class EmpruntDao implements IEmpruntDao {
 
 			pstmt.setInt(1, idMembre);
 			pstmt.setInt(2, idLivre);
-			pstmt.setString(1, dateEmprunt.toString());
+			pstmt.setString(3, dateEmprunt.toString());
 
 			pstmt.executeQuery();
 
