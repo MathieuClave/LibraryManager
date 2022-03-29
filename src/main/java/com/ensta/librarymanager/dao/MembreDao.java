@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import com.ensta.librarymanager.exception.DaoException;
@@ -85,7 +86,7 @@ public class MembreDao implements IMembreDao {
 			Connection conn = ConnectionManager.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("INSERT INTO membre(nom, prenom, adresse, email, telephone, abonnement) "
-							+ "VALUES (?, ?, ?, ?, ?, ?);");
+							+ "VALUES (?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
 
 			pstmt.setString(1, nom);
 			pstmt.setString(2, prenom);
@@ -94,9 +95,13 @@ public class MembreDao implements IMembreDao {
 			pstmt.setString(5, telephone);
 			pstmt.setString(6, abonnement.name());
 
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
+			ResultSet resultSet = pstmt.getGeneratedKeys();
+			if (resultSet.next()) {
+				return (resultSet.getInt(1));
+			}
 
-			return pstmt.executeUpdate();
+			return 1;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException();
@@ -119,7 +124,7 @@ public class MembreDao implements IMembreDao {
 			pstmt.setString(6, membre.getTelephone());
 			pstmt.setString(7, membre.getAbonnement().name());
 
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -134,7 +139,7 @@ public class MembreDao implements IMembreDao {
 			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM membre WHERE id = ?;");
 
 			pstmt.setInt(1, id);
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();

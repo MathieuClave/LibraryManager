@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import com.ensta.librarymanager.exception.DaoException;
@@ -72,14 +73,20 @@ public class LivreDao implements ILivreDao {
 	public int create(String titre, String auteur, String isbn) throws DaoException {
 		try {
 			Connection conn = ConnectionManager.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO livre(titre, auteur, isbn) VALUES (?, ?, ?)");
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO livre(titre, auteur, isbn) VALUES (?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
 
 			pstmt.setString(1, titre);
 			pstmt.setString(2, auteur);
 			pstmt.setString(3, isbn);
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 
-			return pstmt.executeUpdate();
+			ResultSet resultSet = pstmt.getGeneratedKeys();
+			if (resultSet.next()) {
+				return (resultSet.getInt(1));
+			}
+
+			return 1;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException();
@@ -97,7 +104,7 @@ public class LivreDao implements ILivreDao {
 			pstmt.setString(2, livre.getTitre());
 			pstmt.setString(3, livre.getAuteur());
 			pstmt.setString(4, livre.getIsbn());
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -112,7 +119,7 @@ public class LivreDao implements ILivreDao {
 			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM livre WHERE id = ?;");
 
 			pstmt.setInt(1, id);
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();

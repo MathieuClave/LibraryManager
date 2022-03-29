@@ -179,7 +179,7 @@ public class EmpruntDao implements IEmpruntDao {
 			pstmt.setInt(2, idLivre);
 			pstmt.setString(3, dateEmprunt.toString());
 
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -198,7 +198,7 @@ public class EmpruntDao implements IEmpruntDao {
 			pstmt.setInt(1, emprunt.getIdMembre());
 			pstmt.setInt(2, emprunt.getIdLivre());
 			pstmt.setString(3, emprunt.getDateEmprunt().toString());
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
