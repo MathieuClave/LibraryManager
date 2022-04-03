@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ensta.librarymanager.exception.DaoException;
@@ -29,7 +30,7 @@ public class LivreDao implements ILivreDao {
 	@Override
 	public List<Livre> getList() throws DaoException {
 		try {
-			List<Livre> result = null;
+			List<Livre> result = new ArrayList<>();
 			Connection conn = ConnectionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("SELECT id, titre, auteur, isbn FROM LIVRE ");
 			ResultSet rs = pstmt.executeQuery();
@@ -148,7 +149,7 @@ public class LivreDao implements ILivreDao {
 
 	public List<Livre> getListDispo() throws DaoException {
 		try {
-			List<Livre> dispo = null;
+			List<Livre> dispo = new ArrayList<>();
 			List<Livre> existent = this.getList();
 			EmpruntDao empruntDao = EmpruntDao.getInstance();
 			for (Livre livre : existent) {

@@ -30,7 +30,7 @@ public class MembreDao implements IMembreDao {
 	@Override
 	public List<Membre> getList() throws DaoException {
 		try {
-			List<Membre> result = null;
+			List<Membre> result = new ArrayList<>();
 			Connection conn = ConnectionManager.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("SELECT id, nom, prenom, adresse, email, telephone, abonnement "
@@ -168,7 +168,7 @@ public class MembreDao implements IMembreDao {
 
 	public List<Membre> getListMembreEmpruntPossible() throws DaoException {
 		try {
-			List<Membre> empruntPossible = null;
+			List<Membre> empruntPossible = new ArrayList<>();
 			EmpruntDao empruntDao = EmpruntDao.getInstance();
 			List<Membre> tousLesMembres = this.getList();
 			for (Membre membre : tousLesMembres) {

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ensta.librarymanager.exception.DaoException;
@@ -31,7 +32,7 @@ public class EmpruntDao implements IEmpruntDao {
 	@Override
 	public List<Emprunt> getList() throws DaoException {
 		try {
-			List<Emprunt> result = null;
+			List<Emprunt> result = new ArrayList<>();
 			Connection conn = ConnectionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("SELECT e.id AS id, idMembre, nom, prenom, adresse, email,"
 					+ "telephone, abonnement, idLivre, titre, auteur, isbn, dateEmprunt, dateRetour"
@@ -59,7 +60,7 @@ public class EmpruntDao implements IEmpruntDao {
 	@Override
 	public List<Emprunt> getListCurrent() throws DaoException {
 		try {
-			List<Emprunt> result = null;
+			List<Emprunt> result = new ArrayList<>();
 			Connection conn = ConnectionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("SELECT e.id AS id, idMembre, nom, prenom, adresse, email, "
 					+ "telephone, abonnement, idLivre, titre, auteur, isbn, dateEmprunt, dateRetour "
@@ -87,7 +88,7 @@ public class EmpruntDao implements IEmpruntDao {
 	@Override
 	public List<Emprunt> getListCurrentByMembre(int idMembre) throws DaoException {
 		try {
-			List<Emprunt> result = null;
+			List<Emprunt> result = new ArrayList<>();
 			Connection conn = ConnectionManager.getConnection();
 			PreparedStatement pstmt = conn
 					.prepareStatement("SELECT e.id AS id, idMembre, nom, prenom, adresse, email,\n"
@@ -117,7 +118,7 @@ public class EmpruntDao implements IEmpruntDao {
 	@Override
 	public List<Emprunt> getListCurrentByLivre(int idLivre) throws DaoException {
 		try {
-			List<Emprunt> result = null;
+			List<Emprunt> result = new ArrayList<>();
 			Connection conn = ConnectionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("SELECT e.id AS id, idMembre, nom, prenom, adresse, email, "
 					+ "telephone, abonnement, idLivre, titre, auteur, isbn, dateEmprunt, dateRetour "
