@@ -56,6 +56,7 @@ public class LivreService implements ILivreService {
 	@Override
 	public int create(String titre, String auteur, String isbn) throws ServiceException {
 		try {
+			if (titre == "") {throw new ServiceException();}
 			return this.livreDao.create(titre, auteur, isbn);
 		} catch (DaoException e) {
 			e.printStackTrace();
@@ -66,6 +67,7 @@ public class LivreService implements ILivreService {
 	@Override
 	public void update(Livre livre) throws ServiceException {
 		try {
+			if (livre.getTitre() == "") {throw new ServiceException();}
 			this.livreDao.update(livre);
 		} catch (DaoException e) {
 			e.printStackTrace();

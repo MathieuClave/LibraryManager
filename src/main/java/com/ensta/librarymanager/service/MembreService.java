@@ -57,7 +57,8 @@ public class MembreService implements IMembreService {
 	public int create(String nom, String prenom, String adresse, String email, String telephone)
 			throws ServiceException {
 		try {
-			return this.membreDao.create(nom, prenom, adresse, email, telephone, null);
+			if (nom == "" || prenom == "") {throw new ServiceException();}
+			return this.membreDao.create(nom.toUpperCase(), prenom, adresse, email, telephone, null);
 		} catch (DaoException e) {
 			e.printStackTrace();
 			throw new ServiceException();
@@ -67,6 +68,8 @@ public class MembreService implements IMembreService {
 	@Override
 	public void update(Membre membre) throws ServiceException {
 		try {
+			if (membre.getNom() == "" || membre.getPrenom() == "") {throw new ServiceException();}
+			membre.setNom(membre.getNom().toUpperCase());
 			this.membreDao.update(membre);
 		} catch (DaoException e) {
 			e.printStackTrace();
